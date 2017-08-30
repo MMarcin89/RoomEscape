@@ -9,3 +9,4 @@ RoomEscape/Content/StarterContent/
 RoomEscape/.vs/RoomEscape/v15/Solution.VC.db-wal
 RoomEscape/.vs/RoomEscape/v15/Solution.VC.db-shm
 *.ipch
+*.suo
