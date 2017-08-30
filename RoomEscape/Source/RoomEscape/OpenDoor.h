@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+
 #include "Engine/TriggerVolume.h"
 #include "OpenDoor.generated.h"
 
@@ -34,7 +35,7 @@ private:
 		float OpenAngle = 90.0f;
 	UPROPERTY(EditAnywhere)
 		ATriggerVolume *PressurePoint;
-	UPROPERTY(EditAnywhere)
+	
 		AActor* ActorThatOpens;
 
 	
