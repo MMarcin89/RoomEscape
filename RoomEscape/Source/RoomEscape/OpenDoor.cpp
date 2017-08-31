@@ -2,7 +2,7 @@
 
 #include "OpenDoor.h"
 
-#include "GameFramework/Actor.h"
+
 
 
 

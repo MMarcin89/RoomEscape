@@ -19,7 +19,7 @@ void UGrabber::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UE_LOG(LogTemp, Warning, TEXT("Grabber reporting for duty"));
+	UE_LOG(LogTemp, Warning, TEXT("Grabber reporting for duty "));
 	
 }
 
@@ -29,6 +29,17 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	// get player view point this tick
+	FVector OwnerLocation;
+	FRotator OwnerRotator;
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OwnerLocation, OwnerRotator);
+	
+	//UE_LOG(LogTemp, Warning, TEXT("Pozycja %s , rotacja %s"), *OwnerLocation.ToString(),*OwnerRotator.ToString());
+
+	//draw a red trace in the world to visualize
+
+	// ray-cast out to rich distance
+
+	//see what we hit
 }
 
