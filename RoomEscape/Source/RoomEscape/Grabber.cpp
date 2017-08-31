@@ -2,6 +2,8 @@
 
 #include "Grabber.h"
 #include "DrawDebugHelpers.h"
+#include "Public/WorldCollision.h"
+
 
 // Sets default values for this component's properties
 UGrabber::UGrabber()
@@ -29,17 +31,17 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// get player view point this tick
+	/// get player view point this tick
 	FVector OwnerLocation;
 	FRotator OwnerRotator;
-	 GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OwnerLocation, OwnerRotator);
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OwnerLocation, OwnerRotator);
 	
 	//UE_LOG(LogTemp, Warning, TEXT("Pozycja %s , rotacja %s"), *OwnerLocation.ToString(),*OwnerRotator.ToString());
 
-	//draw a red trace in the world to visualize
-
-	 FVector TraceLineEnd = OwnerLocation + (OwnerRotator.Vector()*Reach);
 	
+	//get end of our reach
+	 FVector TraceLineEnd = OwnerLocation + (OwnerRotator.Vector()*Reach);
+	 ///draw a red trace in the world to visualize
 	DrawDebugLine
 	(
 		GetWorld(),
@@ -52,8 +54,25 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		10
 
 		);
-	// ray-cast out to rich distance
 
-	//see what we hit
+	///setup query parameters
+	FCollisionQueryParams TraceParameters(FName(TEXT("")), false, GetOwner());
+	///set a line-trace  to  reach distance
+	FHitResult ThisHitResult;
+	GetWorld()->LineTraceSingleByObjectType
+	(
+		ThisHitResult,
+		OwnerLocation,
+		TraceLineEnd,
+		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
+		TraceParameters
+
+	);
+	AActor* HitActor = ThisHitResult.GetActor();
+	if (HitActor)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Zdezyles sie z %s"), *(HitActor->GetName()));
+	}
+	///see what we hit
 }
 
