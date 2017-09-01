@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-
+#include "GameFramework/Actor.h"
 #include "Engine/TriggerVolume.h"
 #include "OpenDoor.generated.h"
 

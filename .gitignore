@@ -2,8 +2,10 @@
 */DerivedDataCache
 */Intermediate
 */Saved
-RoomEscape/Content/StarterContent/
-
+RoomEscape/Content/StarterContent/Audio
+RoomEscape/Content/StarterContent/Textures
+RoomEscape/Content/StarterContent/HDRI
+RoomEscape/Content/StarterContent/Maps
 
 *.db
 RoomEscape/.vs/RoomEscape/v15/Solution.VC.db-wal

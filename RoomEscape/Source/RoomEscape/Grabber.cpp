@@ -1,8 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#pragma once
 #include "Grabber.h"
+#include "Engine/World.h"
 #include "DrawDebugHelpers.h"
 #include "Public/WorldCollision.h"
+
+
 
 
 // Sets default values for this component's properties
@@ -21,7 +25,15 @@ void UGrabber::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UE_LOG(LogTemp, Warning, TEXT("Grabber reporting for duty "));
+	//UE_LOG(LogTemp, Warning, TEXT("Grabber reporting for duty "));
+
+	///look for attached Physics Handle
+	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	if (PhysicsHandle);
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("No %s component"), *(GetOwner()->GetName()));
+	}
 	
 }
 
