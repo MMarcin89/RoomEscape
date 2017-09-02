@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/Actor.h"
-#include "Components/ActorComponent.h"
+
 #include "Grabber.generated.h"
 
 
@@ -30,5 +30,9 @@ private:
 	float Reach = 100.f;
 
 	UPhysicsHandleComponent* PhysicsHandle = nullptr;
+	UInputComponent *PawnInputComponent = nullptr;
+	
+	//RAy-cast and grab what's in reach
+	void Grab();
 	
 };

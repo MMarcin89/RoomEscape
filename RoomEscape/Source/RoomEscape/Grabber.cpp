@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#pragma once
+
 #include "Grabber.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
@@ -34,7 +34,16 @@ void UGrabber::BeginPlay()
 	{
 		UE_LOG(LogTemp, Error, TEXT("No %s component"), *(GetOwner()->GetName()));
 	}
-	
+	///look for atached input component
+	PawnInputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
+	if (PawnInputComponent)
+	{
+		UE_LOG(LogTemp, Warning, TEXT(" %s component reporting"), *(GetOwner()->GetName()));
+		//bind the input action
+		PawnInputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
+	}
+	else
+		UE_LOG(LogTemp, Error, TEXT("No %s component"), *(GetOwner()->GetName()));
 }
 
 
@@ -86,5 +95,10 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		UE_LOG(LogTemp, Warning, TEXT("Zdezyles sie z %s"), *(HitActor->GetName()));
 	}
 	///see what we hit
+}
+
+void UGrabber::Grab()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Grabb key pressed"));
 }
 
