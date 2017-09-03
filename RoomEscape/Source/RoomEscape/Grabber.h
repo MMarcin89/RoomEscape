@@ -34,5 +34,14 @@ private:
 	
 	//RAy-cast and grab what's in reach
 	void Grab();
-	
+	void Release();
+
+	//Find (assumed) attached physics handle
+	void FindPhysicsHandleComponent();
+
+	//setup (assumed) attached input component
+	void FindAndBindInput();
+
+	//return hit for first physics body with collision channel in reach
+	const FHitResult GetFirstPhysicsBodyInReach();
 };
