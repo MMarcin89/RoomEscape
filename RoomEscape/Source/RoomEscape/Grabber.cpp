@@ -4,6 +4,7 @@
 #include "Grabber.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
+#include "Components/PrimitiveComponent.h"
 #include "Public/WorldCollision.h"
 
 
@@ -33,7 +34,32 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	// get player view point this tick
+	FVector OwnerLocation;
+	FRotator OwnerRotator;
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OwnerLocation, OwnerRotator);
+
+	//get end of our reach
+	FVector TraceLineEnd = OwnerLocation + (OwnerRotator.Vector()*Reach);
+	//setup query parameters
+	FCollisionQueryParams TraceParameters(FName(TEXT("")), false, GetOwner());
+	//set a line-trace  to  reach distance
+	FHitResult ThisHitResult;
+	GetWorld()->LineTraceSingleByObjectType
+	(
+		ThisHitResult,
+		OwnerLocation,
+		TraceLineEnd,
+		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
+		TraceParameters
+
+	);
+
 	//if the physics handle is attached 
+	if (PhysicsHandle->GrabbedComponent)
+	{
+		PhysicsHandle->SetTargetLocation(TraceLineEnd);
+	}
 		//move the object that we/re holding
 
 }
@@ -64,16 +90,28 @@ void UGrabber::FindAndBindInput() {
 }
 void UGrabber::Grab()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Grabb key pressed"));
+	//UE_LOG(LogTemp, Warning, TEXT("Grabb key pressed"));
+	
 	//Line-trace to see if we reach any actors with physics body collision channell
-	GetFirstPhysicsBodyInReach();
-	//TODO if we hit than attach physics handle
-
+	auto HitResult = GetFirstPhysicsBodyInReach();
+	UPrimitiveComponent* ComponentToGrab = HitResult.GetComponent();
+	auto ActorHit = HitResult.GetActor();
+	
+	// if we hit than attach physics handle
+	if (ActorHit) {
+		PhysicsHandle->GrabComponentAtLocationWithRotation(
+			ComponentToGrab,
+			NAME_None,
+			ComponentToGrab->GetOwner()->GetActorLocation(),
+			GetOwner()->GetActorRotation()
+		);
+	}
 }
 void UGrabber::Release()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Grabb key released"));
 	//TODO release physics handle
+	PhysicsHandle->ReleaseComponent();
 }
 
 
@@ -107,5 +145,5 @@ const FHitResult UGrabber::GetFirstPhysicsBodyInReach()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Zdezyles sie z %s"), *(HitActor->GetName()));
 	}
-	return FHitResult();
+	return ThisHitResult;
 }
