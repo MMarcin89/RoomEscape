@@ -25,13 +25,13 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
+		
 private:
 	float Reach = 100.f;
 
 	UPhysicsHandleComponent* PhysicsHandle = nullptr;
 	UInputComponent *PawnInputComponent = nullptr;
-	
+		
 	//RAy-cast and grab what's in reach
 	void Grab();
 	void Release();
@@ -44,4 +44,7 @@ private:
 
 	//return hit for first physics body with collision channel in reach
 	const FHitResult GetFirstPhysicsBodyInReach();
+	
+	FVector GetTraceLineEnd();
+	FVector GetPlayerViewPointLocation();
 };
