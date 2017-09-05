@@ -39,7 +39,7 @@ void UOpenDoor::OpenDoor()
 void UOpenDoor::CloseDoor()
 {
 	//Set door rotation
-	Owner->SetActorRotation(FRotator(0, 0, 0)); //or Creat rotator (look OpenDoor)							
+	Owner->SetActorRotation(FRotator(0, 0, 0)); 						
 }
 
 
@@ -67,11 +67,12 @@ float UOpenDoor::GetTotalMassOfActorsOnPressurePoint()
 
 	TArray<AActor*> OverlappingActors;
 	//znajdz pokrywajacych sie aktorow
+	if (PressurePoint==nullptr) { UE_LOG(LogTemp, Error, TEXT("no pressurepoint component connected to %s"), *GetOwner()->GetName()) return TotalMass; }
 	PressurePoint->GetOverlappingActors(OverlappingActors);
 	for (const auto* Actor : OverlappingActors)
-	{   
-		TotalMass+=Actor->FindComponentByClass<UPrimitiveComponent>()->GetMass();
-		
+	{
+		TotalMass += Actor->FindComponentByClass<UPrimitiveComponent>()->GetMass();
+	}
 	return TotalMass;
 }
 

@@ -28,7 +28,8 @@ void UGrabber::BeginPlay()
 void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-		
+
+	if (!PhysicsHandle) { return; }
 	//if the physics handle is attached 
 	if (PhysicsHandle->GrabbedComponent)
 	{	//move the object that we/re holding
@@ -41,11 +42,12 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 void UGrabber::FindPhysicsHandleComponent()
 {
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
-	if (PhysicsHandle==nullptr)
+	if (!PhysicsHandle)
 	{
-		UE_LOG(LogTemp, Error, TEXT("No %s component"), *(GetOwner()->GetName()));
+	UE_LOG(LogTemp,Error,TEXT("no physics handle component attached to %s"),*GetOwner()->GetName())
 	}
 }
+	
 ///look for atached input component
 void UGrabber::FindAndBindInput() {
 	PawnInputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
@@ -68,17 +70,21 @@ void UGrabber::Grab()
 	auto ActorHit = HitResult.GetActor();
 	
 	// if we hit than attach physics handle(pick it up)
-	if (ActorHit) {
-		PhysicsHandle->GrabComponentAtLocationWithRotation(
+	if (ActorHit)
+	{
+		if (!PhysicsHandle) { return; }
+
+		    PhysicsHandle->GrabComponentAtLocationWithRotation(
 			ComponentToGrab,
 			NAME_None,
 			ComponentToGrab->GetOwner()->GetActorLocation(),
 			GetOwner()->GetActorRotation()
-		);
+			);
 	}
 }
 void UGrabber::Release()
 {
+	if (!PhysicsHandle) { return; }
 	//TODO release physics handle
 	PhysicsHandle->ReleaseComponent();
 }
