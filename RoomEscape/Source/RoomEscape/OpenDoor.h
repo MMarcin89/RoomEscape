@@ -22,7 +22,7 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
+	
 	void OpenDoor();
 	void CloseDoor();
 public:	
@@ -40,7 +40,7 @@ private:
 	
 		float LastDoorOpenTime;
 		
-		AActor* ActorThatOpens;
 		AActor *Owner;
 
+		float GetTotalMassOfActorsOnPressurePoint();
 };
