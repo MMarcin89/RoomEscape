@@ -25,7 +25,8 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-		
+	float Power = 0;
+	float MaxPower = 1000;
 private:
 	float Reach = 100.f;
 
@@ -34,6 +35,7 @@ private:
 		
 	//RAy-cast and grab what's in reach
 	void Grab();
+	void SetPower();
 	void Release();
 
 	//Find (assumed) attached physics handle
@@ -47,4 +49,14 @@ private:
 	
 	FVector GetTraceLineEnd();
 	FVector GetPlayerViewPointLocation();
+	UPrimitiveComponent* ComponentToGrab;
+	float CurrentPower;
+	bool bKeyPressed;
+	bool bIsPowerGrowing;
+	
+	UFUNCTION(BlueprintCallable)
+		float GetCurrentPower();
+
+	UFUNCTION(BlueprintPure)
+		float GetCurrentPowerPercent();
 };

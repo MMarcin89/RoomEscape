@@ -24,6 +24,7 @@ void UOpenDoor::BeginPlay()
 	Super::BeginPlay();
 	//Find owning actor
 	Owner = GetOwner();
+	
 }
 
 
@@ -35,7 +36,7 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	//poll the trigger volume
-	// if the actorThahOpens is in the volume than we open the door
+		// if the actorThahOpens is in the volume than we open the door
 	if (GetTotalMassOfActorsOnPressurePoint()>TriggerMassNeeded)
 	{
 		OnOpenRequest.Broadcast();
@@ -49,10 +50,13 @@ float UOpenDoor::GetTotalMassOfActorsOnPressurePoint()
 {
 	float TotalMass = 0.f;
 
-	TArray<AActor*> OverlappingActors;
+	
 	//znajdz pokrywajacych sie aktorow
 	if (PressurePoint==nullptr) { UE_LOG(LogTemp, Error, TEXT("no pressurepoint component connected to %s"), *GetOwner()->GetName()) return TotalMass; }
+	
+	TArray<AActor*> OverlappingActors;
 	PressurePoint->GetOverlappingActors(OverlappingActors);
+	
 	for (const auto* Actor : OverlappingActors)
 	{
 		TotalMass += Actor->FindComponentByClass<UPrimitiveComponent>()->GetMass();
@@ -60,3 +64,7 @@ float UOpenDoor::GetTotalMassOfActorsOnPressurePoint()
 	return TotalMass;
 }
 
+FVector UOpenDoor::GetStartLocation()
+{
+	return GetOwner()->GetActorLocation();
+}

@@ -30,7 +30,8 @@ public:
 		FDoorEvent OnOpenRequest;
 	UPROPERTY(BlueprintAssignable)
 		FDoorEvent OnCloseRequest;
-		
+	
+	
 private:
 	
 	
@@ -40,6 +41,10 @@ private:
 		float TriggerMassNeeded=40.f;
 			
 		AActor *Owner=nullptr;
-
+		
+				
 		float GetTotalMassOfActorsOnPressurePoint();
+
+		UFUNCTION(BlueprintCallable)
+			FVector GetStartLocation();
 };

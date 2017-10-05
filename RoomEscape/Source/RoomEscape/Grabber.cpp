@@ -2,8 +2,10 @@
 
 #include "Grabber.h"
 #include "Engine/World.h"
+#include "Engine.h"
 #include "DrawDebugHelpers.h"
 #include "Components/PrimitiveComponent.h"
+#include "GameFramework/PlayerController.h "
 #include "Public/WorldCollision.h"
 
 
@@ -35,8 +37,32 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	{	//move the object that we/re holding
 		PhysicsHandle->SetTargetLocation(GetTraceLineEnd());
 	}
+	
+	if(!bKeyPressed)
+	{
+		CurrentPower=Power;
+	}
+	else if (bKeyPressed&&bIsPowerGrowing)
+	{
+		CurrentPower += 10;
+		if (CurrentPower > MaxPower)
+		{
+			bIsPowerGrowing = false;
+		}
+	}
+	 if (bKeyPressed&&!bIsPowerGrowing)
+		{
+			CurrentPower -= 10;
 
-}
+			if (CurrentPower < Power)
+			{
+				bIsPowerGrowing = true;
+			}
+		}
+		
+		UE_LOG(LogTemp, Error, TEXT("Power %f"), CurrentPower)
+	}
+
 
 ///look for attached Physics Handle
 void UGrabber::FindPhysicsHandleComponent()
@@ -56,7 +82,9 @@ void UGrabber::FindAndBindInput() {
 		//UE_LOG(LogTemp, Warning, TEXT(" %s component reporting"), *(GetOwner()->GetName()));
 		//bind the input action
 		PawnInputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
-		PawnInputComponent->BindAction("Grab", IE_Released, this, &UGrabber::Release);
+		PawnInputComponent->BindAction("Throw", IE_Pressed, this, &UGrabber::SetPower);
+		PawnInputComponent->BindAction("Throw", IE_Released, this, &UGrabber::Release);
+		
 	}
 	else {
 		UE_LOG(LogTemp, Error, TEXT("No %s component"), *(GetOwner()->GetName()));
@@ -64,9 +92,12 @@ void UGrabber::FindAndBindInput() {
 }
 void UGrabber::Grab()
 {
+	
+
+
 	//Line-trace to see if we reach any actors with physics body collision channell
 	auto HitResult = GetFirstPhysicsBodyInReach();
-	UPrimitiveComponent* ComponentToGrab = HitResult.GetComponent();
+	ComponentToGrab = HitResult.GetComponent();
 	auto ActorHit = HitResult.GetActor();
 	
 	// if we hit than attach physics handle(pick it up)
@@ -82,14 +113,42 @@ void UGrabber::Grab()
 			);
 	}
 }
+void UGrabber::SetPower()
+{
+
+	if (!PhysicsHandle->GetGrabbedComponent()) { return; }
+	
+		
+			bKeyPressed = true;
+			bIsPowerGrowing = true;
+	
+}
+
 void UGrabber::Release()
 {
-	if (!PhysicsHandle) { return; }
-	//TODO release physics handle
 	PhysicsHandle->ReleaseComponent();
+	bKeyPressed = false;
+	
+		
+	
 }
 const FHitResult UGrabber::GetFirstPhysicsBodyInReach()
 {
+	
+/*
+	DrawDebugLine
+	(
+		GetWorld(),
+		GetPlayerViewPointLocation(),
+		GetTraceLineEnd(),
+		FColor(255, 0, 0),
+		true,
+		0,
+		0,
+		10
+
+	); */
+
 	//setup query parameters
 	FCollisionQueryParams TraceParameters(FName(TEXT("")), false, GetOwner());
 	//set a line-trace  to  reach distance
@@ -112,13 +171,24 @@ FVector UGrabber::GetPlayerViewPointLocation()
 {
 	FVector OwnerLocation;
 	FRotator OwnerRotator;
-	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OwnerLocation, OwnerRotator);
+	GetWorld()->GetFirstPlayerController()->GetActorEyesViewPoint(OwnerLocation, OwnerRotator);
 	return OwnerLocation;
 }
+
+float UGrabber::GetCurrentPower()
+{
+	return CurrentPower;
+}
+
+float UGrabber::GetCurrentPowerPercent()
+{
+	return CurrentPower/MaxPower;
+}
+
 FVector UGrabber::GetTraceLineEnd()
 {
 	FVector OwnerLocation;
 	FRotator OwnerRotator;
-	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OwnerLocation, OwnerRotator);
-	return OwnerLocation + (OwnerRotator.Vector()*Reach);
+	GetWorld()->GetFirstPlayerController()->GetActorEyesViewPoint(OwnerLocation, OwnerRotator);
+	return (OwnerLocation) + (OwnerRotator.Vector()*Reach);
 }

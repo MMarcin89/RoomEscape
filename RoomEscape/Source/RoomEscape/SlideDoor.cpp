@@ -24,8 +24,14 @@ void USlideDoor::BeginPlay()
 	// ...
 	Owner = GetOwner();
 	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
-	bisdoorclosed = true;
-	StartLocation = Owner->GetActorLocation();
+	
+}
+
+
+
+FVector USlideDoor::GetStartLocation()
+{
+	return GetOwner()->GetActorLocation();
 }
 
 
@@ -34,42 +40,22 @@ void USlideDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (ActorThatOpens->IsOverlappingActor(PressurePoint) && bisdoorclosed)
+	if (ActorThatOpens->IsOverlappingActor(PressurePoint) )
 	{
-		OpenDoor();
+		
+		OnOpenRequest.Broadcast();
+	   
+		
 	}
-
-	if (ActorThatOpens->IsOverlappingActor(PressurePoint1))
+	else
 	{
-		CloseDoor();
+		
+		OnCloseRequest.Broadcast();
+		
+		
 	}
-
-}
-
-
-void USlideDoor::OpenDoor()
-{
-	FVector NewLocation = Owner->GetActorLocation() + FVector(0, DistanceToMove, 0);
-	FHitResult *ThisHit=nullptr;
-		Owner->SetActorLocation(
-		NewLocation,
-		false,
-		ThisHit,
-		ETeleportType::None);
-		bisdoorclosed = false;
-}
-
-void USlideDoor::CloseDoor()
-{
-	FHitResult *ThisHit = nullptr;
-	Owner->SetActorLocation(
-		StartLocation,
-		false,
-		ThisHit,
-		ETeleportType::None);
-		bisdoorclosed = true;
-
 	
 }
+
 
 

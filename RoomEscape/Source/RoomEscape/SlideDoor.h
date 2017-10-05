@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "SlideDoor.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FWallPanel);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ROOMESCAPE_API USlideDoor : public UActorComponent
@@ -16,25 +17,29 @@ public:
 	// Sets default values for this component's properties
 	USlideDoor();
 
+
+	// Called every frame
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	UPROPERTY(BlueprintAssignable)
+		FWallPanel OnOpenRequest;
+	UPROPERTY(BlueprintAssignable)
+		FWallPanel OnCloseRequest;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 private:
 	UPROPERTY(EditAnywhere)
 		ATriggerVolume *PressurePoint = nullptr;
 	UPROPERTY(EditAnywhere)
-		ATriggerVolume *PressurePoint1 = nullptr;
-	UPROPERTY(EditAnywhere)
 		AActor *ActorThatOpens = nullptr;
 	
 	AActor* Owner = nullptr;
-	float DistanceToMove = -100.f;
-	void OpenDoor();
-	void CloseDoor();
-	bool bisdoorclosed;
-	FVector StartLocation;
+	
+	UFUNCTION(BlueprintCallable)
+	FVector GetStartLocation();
+
+	
+	
 };
