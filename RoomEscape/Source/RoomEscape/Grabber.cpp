@@ -3,7 +3,6 @@
 #include "Grabber.h"
 #include "Engine/World.h"
 #include "Engine.h"
-#include "DrawDebugHelpers.h"
 #include "Components/PrimitiveComponent.h"
 #include "GameFramework/PlayerController.h "
 #include "Public/WorldCollision.h"
@@ -60,7 +59,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 			}
 		}
 		
-		UE_LOG(LogTemp, Error, TEXT("Power %f"), CurrentPower)
+		//UE_LOG(LogTemp, Error, TEXT("Power %f"), CurrentPower)
 	}
 
 
@@ -134,21 +133,6 @@ void UGrabber::Release()
 }
 const FHitResult UGrabber::GetFirstPhysicsBodyInReach()
 {
-	
-/*
-	DrawDebugLine
-	(
-		GetWorld(),
-		GetPlayerViewPointLocation(),
-		GetTraceLineEnd(),
-		FColor(255, 0, 0),
-		true,
-		0,
-		0,
-		10
-
-	); */
-
 	//setup query parameters
 	FCollisionQueryParams TraceParameters(FName(TEXT("")), false, GetOwner());
 	//set a line-trace  to  reach distance
